@@ -10,3 +10,5 @@
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=flythq_php-project-48&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=flythq_php-project-48)
 
 [![asciicast](https://asciinema.org/a/MSDGh2sxhCUxyqQZ.svg)](https://asciinema.org/a/MSDGh2sxhCUxyqQZ)
+
+[![asciicast](https://asciinema.org/a/0lOKzsLqOyIw8MwN.svg)](https://asciinema.org/a/0lOKzsLqOyIw8MwN)
