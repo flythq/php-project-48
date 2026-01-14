@@ -8,23 +8,24 @@ function format(array $diff): string
         switch ($node['type']) {
             case 'added':
                 $value = convertToString($node['value']);
-                return "+ {$node['key']}: {$value}";
+                return "  + {$node['key']}: {$value}";
             case 'removed':
                 $value = convertToString($node['value']);
-                return "- {$node['key']}: {$value}";
+                return "  - {$node['key']}: {$value}";
             case 'unchanged':
                 $value = convertToString($node['value']);
-                return "  {$node['key']}: {$value}";
+                return "    {$node['key']}: {$value}";
             case 'changed':
                 $oldValue = convertToString($node['oldValue']);
                 $newValue = convertToString($node['newValue']);
-                return "- {$node['key']}: {$oldValue}" . PHP_EOL . "+ {$node['key']}: {$newValue}";
+                return "  - {$node['key']}: {$oldValue}" . PHP_EOL . "  + {$node['key']}: {$newValue}";
             default:
                 throw new \Exception("Unknown node type: {$node['type']}");
         }
     }, $diff);
 
-    return implode(PHP_EOL, $lines);
+    $result = implode(PHP_EOL, $lines);
+    return "{\n{$result}\n}";
 }
 
 function convertToString(mixed $value): string

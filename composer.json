@@ -19,12 +19,14 @@
       "src/Utils.php",
       "src/Parsers/Parser.php",
       "src/Parsers/JsonParser.php",
+      "src/Parsers/YamlParser.php",
       "src/Formatters/Stylish.php"
     ]
   },
   "require": {
     "docopt/docopt": "^1.0",
-    "funct/funct": "^1.6"
+    "funct/funct": "^1.6",
+    "symfony/yaml": "^8.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^4.0",
