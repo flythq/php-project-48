@@ -11,7 +11,7 @@ function parse(string $yaml): array
     try {
         $data = Yaml::parse($yaml);
     } catch (ParseException $e) {
-        throw new Exception("Invalid YAML: {$e->getMessage()}");
+        throw new ParseException("Invalid YAML: {$e->getMessage()}");
     }
 
     return $data;
