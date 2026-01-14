@@ -19,11 +19,19 @@ class DifferTest extends TestCase
     public function testJsonDiff(): void
     {
         $this->assertEquals($this->diff, genDiff('file1.json', 'file2.json'));
+
+        $this->expectException(\Exception::class);
+
+        $this->assertEquals($this->diff, genDiff('invalidJason.json', 'invalidJason.json'));
     }
 
     public function testYamlDiff(): void
     {
         $this->assertEquals($this->diff, genDiff('file1.yaml', 'file2.yaml'));
         $this->assertEquals($this->diff, genDiff('file1.yml', 'file2.yml'));
+
+        $this->expectException(\Exception::class);
+
+        $this->assertEquals($this->diff, genDiff('invalidYaml.yaml', 'invalidYaml.yaml'));
     }
 }
