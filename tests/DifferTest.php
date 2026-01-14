@@ -3,6 +3,7 @@
 namespace Differ\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Yaml\Exception\ParseException;
 
 use function Differ\Differ\genDiff;
 use function Differ\Utils\getFileContent;
@@ -20,9 +21,9 @@ class DifferTest extends TestCase
     {
         $this->assertEquals($this->diff, genDiff('file1.json', 'file2.json'));
 
-        $this->expectException(\Exception::class);
+        $this->expectException(\JsonException::class);
 
-        $this->assertEquals($this->diff, genDiff('invalidJason.json', 'invalidJason.json'));
+        $this->assertEquals($this->diff, genDiff('invalidJson.json', 'invalidJson.json'));
     }
 
     public function testYamlDiff(): void
@@ -30,7 +31,7 @@ class DifferTest extends TestCase
         $this->assertEquals($this->diff, genDiff('file1.yaml', 'file2.yaml'));
         $this->assertEquals($this->diff, genDiff('file1.yml', 'file2.yml'));
 
-        $this->expectException(\Exception::class);
+        $this->expectException(ParseException::class);
 
         $this->assertEquals($this->diff, genDiff('invalidYaml.yaml', 'invalidYaml.yaml'));
     }
