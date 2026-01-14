@@ -1,0 +1,34 @@
+{
+  "name": "hexlet/code",
+  "description": "Difference calculator",
+  "bin": [
+    "bin/gendiff"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Andrey Nikolaenkov",
+      "email": "nichexplore@gmail.com"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "src/Cli.php",
+      "src/Differ.php",
+      "src/Utils.php",
+      "src/Parsers/Parser.php",
+      "src/Parsers/JsonParser.php",
+      "src/Formatters/Stylish.php"
+    ]
+  },
+  "require": {
+    "docopt/docopt": "^1.0",
+    "funct/funct": "^1.6"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^4.0",
+    "phpunit/phpunit": "^11.5",
+    "roave/security-advisories": "dev-latest"
+  }
+}
