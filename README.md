@@ -43,8 +43,8 @@ genDiff(string $finame, string $filename, string $format = 'stylish'): string
 
 ## Examples
 
-> <a href="https://asciinema.org/a/MSDGh2sxhCUxyqQZ" target="_blank"><img src="https://asciinema.org/a/MSDGh2sxhCUxyqQZ.svg" />Json plain example</a>
-> <a href="https://asciinema.org/a/0lOKzsLqOyIw8MwN" target="_blank"><img src="https://asciinema.org/a/0lOKzsLqOyIw8MwN.svg" />Yaml plain example</a>
-> <a href="https://asciinema.org/a/2ZuihzPjGlo5p3bb" target="_blank"><img src="https://asciinema.org/a/2ZuihzPjGlo5p3bb.svg" />Stylish format example</a>
-> <a href="https://asciinema.org/a/vEoXR7UhsO6w2qDZ" target="_blank"><img src="https://asciinema.org/a/vEoXR7UhsO6w2qDZ.svg" />Plain format example</a>
-> <a href="https://asciinema.org/a/DGlQ5nc8EKZq7Zc8" target="_blank"><img src="https://asciinema.org/a/DGlQ5nc8EKZq7Zc8.svg" />Json format example</a>
+> <a href="https://asciinema.org/a/MSDGh2sxhCUxyqQZ">Json plain example</a>
+> <a href="https://asciinema.org/a/0lOKzsLqOyIw8MwN">Yaml plain example</a>
+> <a href="https://asciinema.org/a/2ZuihzPjGlo5p3bb">Stylish format example</a>
+> <a href="https://asciinema.org/a/vEoXR7UhsO6w2qDZ">Plain format example</a>
+> <a href="https://asciinema.org/a/DGlQ5nc8EKZq7Zc8">Json format example</a>
