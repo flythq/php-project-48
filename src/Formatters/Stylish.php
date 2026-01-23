@@ -110,7 +110,7 @@ function formatDiffLine(string $indent, string $type, string $key, mixed $value,
 function stringifyValue(mixed $value, int $depth): string
 {
     if (!is_array($value)) {
-        return convertToString($value);
+        return stringify($value);
     }
 
     $indent = str_repeat(
@@ -160,7 +160,7 @@ function getDiffSymbol(string $type): string
     return STYLISH_FORMAT_CONFIG['symbols'][$type] ?? ' ';
 }
 
-function convertToString(mixed $value): string
+function stringify(mixed $value): string
 {
     return match (true) {
         is_bool($value) => $value ? 'true' : 'false',

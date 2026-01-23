@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Differ\Formatters\Plain;
 
+use InvalidArgumentException;
+
 use const Differ\Differ\COMPARABLE_TYPES;
 
 const PLAIN_FORMAT_CONFIG = [
@@ -40,7 +42,7 @@ function formatNodes(array $nodes, string $path = ''): string
                 break;
 
             case COMPARABLE_TYPES['added']:
-                $value = formatValue($node['value']);
+                $value = stringify($node['value']);
                 $lines[] = "Property '{$currentPath}' was added with value: {$value}";
                 break;
 
@@ -49,44 +51,35 @@ function formatNodes(array $nodes, string $path = ''): string
                 break;
 
             case COMPARABLE_TYPES['changed']:
-                $oldValue = formatValue($node['oldValue']);
-                $newValue = formatValue($node['newValue']);
+                $oldValue = stringify($node['oldValue']);
+                $newValue = stringify($node['newValue']);
                 $lines[] = "Property '{$currentPath}' was updated. From {$oldValue} to {$newValue}";
                 break;
 
-            default:
+            case COMPARABLE_TYPES['unchanged']:
+                $lines[] = '';
                 break;
+
+            default:
+                throw new InvalidArgumentException("Invalid type state {$type}");
         }
     }
 
     $filteredLines = array_filter($lines, function ($line) {
         return $line !== '';
     });
+
     return implode("\n", $filteredLines);
 }
 
-function formatValue(mixed $value): string
+function stringify(mixed $value): string
 {
-    if (is_array($value)) {
-        return '[complex value]';
-    }
-
-    if (is_string($value)) {
-        return "'{$value}'";
-    }
-
-    if (is_bool($value)) {
-        return $value ? 'true' : 'false';
-    }
-
-    if (is_null($value)) {
-        return 'null';
-    }
-
-    if (is_numeric($value)) {
-        return (string) $value;
-    }
-
-    // Для любых других типов
-    return var_export($value, true);
+    return match (true) {
+        is_bool($value) => $value ? 'true' : 'false',
+        is_null($value) => 'null',
+        is_string($value) => "'$value'",
+        is_numeric($value) => (string) $value,
+        is_array($value) => '[complex value]',
+        default => var_export($value, true)
+    };
 }

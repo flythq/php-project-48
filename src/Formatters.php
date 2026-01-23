@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Differ\Formatters;
 
 use InvalidArgumentException;
+use JsonException;
 
 use function Differ\Formatters\Stylish\format as formatStylish;
 use function Differ\Formatters\Plain\format as formatPlain;
@@ -16,6 +17,9 @@ const FORMAT_CONFIG = [
     'json' => 'json',
 ];
 
+/**
+ * @throws JsonException
+ */
 function format(array $diff, string $format): string
 {
     return match ($format) {
