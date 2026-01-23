@@ -1,23 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Differ\Differ;
 
-use function Differ\Parsers\parse;
+use Exception;
+
+use function Differ\Parser\parse;
+use function Differ\Formatters\format;
 use function Differ\Utils\getFileContent;
 use function Differ\Utils\getFileExtension;
 use function Funct\Collection\sortBy;
 use function Funct\Collection\union;
-use function Differ\Formatters\Stylish\format as formatStylish;
+
+const COMPARABLE_TYPES = [
+    'added' => 'added',
+    'removed' => 'removed',
+    'changed' => 'changed',
+    'unchanged' => 'unchanged',
+    'nested' => 'nested',
+];
 
 /**
- * @throws \Exception
+ * @throws Exception
  */
 function genDiff(string $filePath1, string $filePath2, string $format = 'stylish'): string
 {
     $data1 = parse(getFileContent($filePath1), getFileExtension($filePath1));
     $data2 = parse(getFileContent($filePath2), getFileExtension($filePath2));
-    //print_r($data1);
-    //print_r($data2);
 
     $diff = buildDiff($data1, $data2);
 
@@ -26,15 +36,11 @@ function genDiff(string $filePath1, string $filePath2, string $format = 'stylish
 
 function buildDiff(array $data1, array $data2): array
 {
-
     $keys = union(array_keys($data1), array_keys($data2));
-    //print_r($keys);
-    //$keys = array_unique(array_merge(array_keys($data1), array_keys($data2)));
-    //sort($keys);
+
     $sortedKeys = sortBy($keys, function ($key) {
         return $key;
     });
-    //print_r($sortedKeys);
 
     $diff = array_map(function ($key) use ($data1, $data2) {
         $value1 = $data1[$key] ?? null;
@@ -43,7 +49,7 @@ function buildDiff(array $data1, array $data2): array
         if (!array_key_exists($key, $data1)) {
             return [
                 'key' => $key,
-                'type' => 'added',
+                'type' => COMPARABLE_TYPES['added'],
                 'value' => $value2
             ];
         }
@@ -51,25 +57,26 @@ function buildDiff(array $data1, array $data2): array
         if (!array_key_exists($key, $data2)) {
             return [
                 'key' => $key,
-                'type' => 'removed',
+                'type' => COMPARABLE_TYPES['removed'],
                 'value' => $value1
             ];
         }
 
-        /*
-        if (is_array($value1) && is_array($value2)) {
+        if (
+            (is_array($value1) && !array_is_list($value1)) &&
+            (is_array($value2) && !array_is_list($value2))
+        ) {
             return [
                 'key' => $key,
-                'type' => 'nested',
+                'type' => COMPARABLE_TYPES['nested'],
                 'children' => buildDiff($value1, $value2)
             ];
         }
-        */
 
         if ($value1 !== $value2) {
             return [
                 'key' => $key,
-                'type' => 'changed',
+                'type' => COMPARABLE_TYPES['changed'],
                 'oldValue' => $value1,
                 'newValue' => $value2
             ];
@@ -77,20 +84,10 @@ function buildDiff(array $data1, array $data2): array
 
         return [
             'key' => $key,
-            'type' => 'unchanged',
+            'type' => COMPARABLE_TYPES['unchanged'],
             'value' => $value1
         ];
     }, $sortedKeys);
-    //print_r($diff);
-    //print_r(array_values($diff));
 
     return array_values($diff);
-}
-
-function format(array $diff, string $formatName): string
-{
-    return match ($formatName) {
-        'stylish' => formatStylish($diff),
-        default => throw new \Exception("Unknown format '{$formatName}'"),
-    };
 }

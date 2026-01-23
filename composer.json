@@ -17,10 +17,11 @@
       "src/Cli.php",
       "src/Differ.php",
       "src/Utils.php",
-      "src/Parsers/Parser.php",
-      "src/Parsers/JsonParser.php",
-      "src/Parsers/YamlParser.php",
-      "src/Formatters/Stylish.php"
+      "src/Parser.php",
+      "src/Formatters.php",
+      "src/Formatters/Stylish.php",
+      "src/Formatters/Json.php",
+      "src/Formatters/Plain.php"
     ]
   },
   "require": {

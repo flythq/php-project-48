@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Differ\Cli;
 
 use function Differ\Differ\genDiff;
 
-const  VERSION = '1.0.0';
+const  VERSION = '1.0';
 const DOC = <<<DOC
 Generate diff
 

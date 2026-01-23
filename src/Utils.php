@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Differ\Utils;
+
+use InvalidArgumentException;
 
 const WORKING_DIRECTORY = __DIR__ . '/../tests/fixtures/';
 
@@ -9,13 +13,13 @@ function getFileContent(string $filePath): string
     $realPath = isAbsolutePath($filePath) ? $filePath : getAbsolutePath($filePath);
 
     if (!file_exists($realPath)) {
-        throw new \Exception("File not found: {$filePath}");
+        throw new InvalidArgumentException("File not found: {$filePath}");
     }
 
     $content = file_get_contents($realPath);
 
     if ($content === false) {
-        throw new \Exception("Can`t read file: {$filePath}");
+        throw new InvalidArgumentException("Can`t read file: {$filePath}");
     }
 
     return $content;
@@ -37,5 +41,5 @@ function isAbsolutePath(string $path): bool
 
 function getAbsolutePath(string $path): string
 {
-    return  WORKING_DIRECTORY . DIRECTORY_SEPARATOR . $path;
+    return (string) realpath(WORKING_DIRECTORY . $path);
 }

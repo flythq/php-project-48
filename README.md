@@ -9,8 +9,42 @@
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=flythq_php-project-48&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=flythq_php-project-48)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=flythq_php-project-48&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=flythq_php-project-48)
 
+## Difference calculator
 
-[![asciicast](https://asciinema.org/a/MSDGh2sxhCUxyqQZ.svg)](https://asciinema.org/a/MSDGh2sxhCUxyqQZ)
+### Prerequisites
 
+* Linux, Macos, WSL
+* PHP >=8.2
+* Make
 
-[![asciicast](https://asciinema.org/a/0lOKzsLqOyIw8MwN.svg)](https://asciinema.org/a/0lOKzsLqOyIw8MwN)
+## Setup
+
+Setup [SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) before clone:
+
+```bash
+git clone git@github.com:flythq/php-project-48.git
+cd php-project-48
+
+make install
+```
+
+## Description
+
+A difference calculator is a program that determines the difference between two data structures. This is a popular task, and there are many online services available to solve it, such as http://www.jsondiff.com/. A similar mechanism is used when running tests or automatically tracking changes in configuration files.
+
+```php
+genDiff(string $finame, string $filename, string $format = 'stylish'): string
+```
+
+## Parameters
+
+- `$filename` - path to the file
+- `$format` - output format (default: `stylish`). Use `gendiff --help` or `-h` for more information
+
+## Examples
+
+> <a href="https://asciinema.org/a/MSDGh2sxhCUxyqQZ" target="_blank"><img src="https://asciinema.org/a/MSDGh2sxhCUxyqQZ.svg" />Json plain example</a>
+> <a href="https://asciinema.org/a/0lOKzsLqOyIw8MwN" target="_blank"><img src="https://asciinema.org/a/0lOKzsLqOyIw8MwN.svg" />Yaml plain example</a>
+> <a href="https://asciinema.org/a/2ZuihzPjGlo5p3bb" target="_blank"><img src="https://asciinema.org/a/2ZuihzPjGlo5p3bb.svg" />Stylish format example</a>
+> <a href="https://asciinema.org/a/vEoXR7UhsO6w2qDZ" target="_blank"><img src="https://asciinema.org/a/vEoXR7UhsO6w2qDZ.svg" />Plain format example</a>
+> <a href="https://asciinema.org/a/DGlQ5nc8EKZq7Zc8" target="_blank"><img src="https://asciinema.org/a/DGlQ5nc8EKZq7Zc8.svg" />Json format example</a>

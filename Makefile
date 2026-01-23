@@ -1,14 +1,14 @@
 install:
-	@composer install
+	composer install
 
 validate:
-	@composer validate
+	composer validate
 
 lint:
-	@composer exec --verbose phpcs -- --standard=PSR12 src bin tests
+	composer exec --verbose phpcs -- --standard=PSR12 src bin tests
 
 fix:
-	@composer exec --verbose phpcbf -- --standard=PSR12 src bin tests
+	composer exec --verbose phpcbf -- --standard=PSR12 src bin tests
 
 test:
 	composer exec --verbose phpunit tests

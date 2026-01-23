@@ -1,38 +1,62 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Differ\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Yaml\Exception\ParseException;
+use Exception;
 
 use function Differ\Differ\genDiff;
 use function Differ\Utils\getFileContent;
 
 class DifferTest extends TestCase
 {
-    private string $diff;
-
-    public function setUp(): void
+    /**
+     * @throws Exception
+     */
+    #[DataProvider('diffProvider')]
+    public function testDiff($fileType1, $fileType2, $format): void
     {
-        $this->diff = getFileContent('diff.txt');
+        $actual = genDiff("file1.{$fileType1}", "file2.{$fileType2}", $format);
+        $expected = getFileContent("expected/{$format}");
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testJsonDiff(): void
+    public static function diffProvider(): array
     {
-        $this->assertEquals($this->diff, genDiff('file1.json', 'file2.json'));
+        return [
+            'dataset json/json, -format stylish' => ['json', 'json', 'stylish'],
+            'dataset json/yaml, -format stylish' => ['json', 'yaml', 'stylish'],
+            'dataset yaml/yml, -format stylish'  => ['yaml', 'yml', 'stylish'],
+            'dataset yml/json, -format stylish'  => ['yml', 'json', 'stylish'],
 
-        $this->expectException(\JsonException::class);
+            'dataset json/json, -format plain' => ['json', 'json', 'plain'],
+            'dataset json/yaml, -format plain' => ['json', 'yaml', 'plain'],
+            'dataset yaml/yml, -format plain'  => ['yaml', 'yml', 'plain'],
+            'dataset yml/json, -format plain'  => ['yml', 'json', 'plain'],
 
-        $this->assertEquals($this->diff, genDiff('invalidJson.json', 'invalidJson.json'));
+            'dataset json/json, -format json' => ['json', 'json', 'json'],
+            'dataset json/yaml, -format json' => ['json', 'yaml', 'json'],
+            'dataset yaml/yml, -format json'  => ['yaml', 'yml', 'json'],
+            'dataset yml/json, -format json'  => ['yml', 'json', 'json'],
+        ];
     }
 
-    public function testYamlDiff(): void
+    #[DataProvider('invalidFileProvider')]
+    public function testInvalidFilesThrowsException(string $file1, string $file2): void
     {
-        $this->assertEquals($this->diff, genDiff('file1.yaml', 'file2.yaml'));
-        $this->assertEquals($this->diff, genDiff('file1.yml', 'file2.yml'));
+        $this->expectException(Exception::class);
+        genDiff($file1, $file2);
+    }
 
-        $this->expectException(ParseException::class);
-
-        $this->assertEquals($this->diff, genDiff('invalidYaml.yaml', 'invalidYaml.yaml'));
+    public static function invalidFileProvider(): array
+    {
+        return [
+            'invalid json file'  => ['invalid.json', 'file2.json'],
+            'invalid yaml file' => ['file1.yaml', 'invalid.yaml'],
+            'not existing file'   => ['some-file.json', 'file2.yaml'],
+        ];
     }
 }
