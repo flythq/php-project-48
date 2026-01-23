@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Differ\Formatters\Stylish;
 
+use function Differ\Formatters\stringify;
+
 use const Differ\Differ\COMPARABLE_TYPES;
 
 const STYLISH_FORMAT_CONFIG = [
@@ -110,7 +112,7 @@ function formatDiffLine(string $indent, string $type, string $key, mixed $value,
 function stringifyValue(mixed $value, int $depth): string
 {
     if (!is_array($value)) {
-        return stringify($value);
+        return stringify($value, ['formatArrays' => true]);
     }
 
     $indent = str_repeat(
@@ -158,15 +160,4 @@ function createCloseBracketIndent(int $depth): string
 function getDiffSymbol(string $type): string
 {
     return STYLISH_FORMAT_CONFIG['symbols'][$type] ?? ' ';
-}
-
-function stringify(mixed $value): string
-{
-    return match (true) {
-        is_bool($value) => $value ? 'true' : 'false',
-        is_null($value) => 'null',
-        is_string($value) => $value,
-        is_numeric($value) => (string) $value,
-        default => var_export($value, true)
-    };
 }

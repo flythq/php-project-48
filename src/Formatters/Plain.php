@@ -6,15 +6,15 @@ namespace Differ\Formatters\Plain;
 
 use InvalidArgumentException;
 
+use function Differ\Formatters\stringify;
+
 use const Differ\Differ\COMPARABLE_TYPES;
 
-const PLAIN_FORMAT_CONFIG = [
-    'text' => [
-        COMPARABLE_TYPES['added'] => 'added',
-        COMPARABLE_TYPES['removed'] => 'removed',
-        COMPARABLE_TYPES['changed'] => 'updated',
-        COMPARABLE_TYPES['nested'] => '[complex value]',
-    ],
+const PLAIN_FORMAT_TEXT = [
+    COMPARABLE_TYPES['added'] => 'added',
+    COMPARABLE_TYPES['removed'] => 'removed',
+    COMPARABLE_TYPES['changed'] => 'updated',
+    COMPARABLE_TYPES['nested'] => '[complex value]',
 ];
 
 function format(array $diff): string
@@ -42,7 +42,10 @@ function formatNodes(array $nodes, string $path = ''): string
                 break;
 
             case COMPARABLE_TYPES['added']:
-                $value = stringify($node['value']);
+                $value = stringify(
+                    $node['value'],
+                    ['quoteStrings' => true, 'complexValue' => PLAIN_FORMAT_TEXT[COMPARABLE_TYPES['nested']]]
+                );
                 $lines[] = "Property '{$currentPath}' was added with value: {$value}";
                 break;
 
@@ -51,8 +54,14 @@ function formatNodes(array $nodes, string $path = ''): string
                 break;
 
             case COMPARABLE_TYPES['changed']:
-                $oldValue = stringify($node['oldValue']);
-                $newValue = stringify($node['newValue']);
+                $oldValue = stringify(
+                    $node['oldValue'],
+                    ['quoteStrings' => true, 'complexValue' => PLAIN_FORMAT_TEXT[COMPARABLE_TYPES['nested']]]
+                );
+                $newValue = stringify(
+                    $node['newValue'],
+                    ['quoteStrings' => true, 'complexValue' => PLAIN_FORMAT_TEXT[COMPARABLE_TYPES['nested']]]
+                );
                 $lines[] = "Property '{$currentPath}' was updated. From {$oldValue} to {$newValue}";
                 break;
 
@@ -70,16 +79,4 @@ function formatNodes(array $nodes, string $path = ''): string
     });
 
     return implode("\n", $filteredLines);
-}
-
-function stringify(mixed $value): string
-{
-    return match (true) {
-        is_bool($value) => $value ? 'true' : 'false',
-        is_null($value) => 'null',
-        is_string($value) => "'$value'",
-        is_numeric($value) => (string) $value,
-        is_array($value) => '[complex value]',
-        default => var_export($value, true)
-    };
 }
