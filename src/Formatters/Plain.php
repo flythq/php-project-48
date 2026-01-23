@@ -27,7 +27,12 @@ function formatNodes(array $nodes, string $path = ''): string
     foreach ($nodes as $node) {
         $key = $node['key'];
         $type = $node['type'];
-        $currentPath = $path ? "{$path}.{$key}" : $key;
+
+        if ($path === '') {
+            $currentPath = $key;
+        } else {
+            $currentPath = "{$path}.{$key}";
+        }
 
         switch ($type) {
             case COMPARABLE_TYPES['nested']:

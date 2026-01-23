@@ -36,7 +36,8 @@ function isAbsolutePath(string $path): bool
         return str_starts_with($path, '/');
     }
 
-    return preg_match('/^[a-z]:\\\\/i', $path);
+    $result = preg_match('/^[a-z]:\\\\/i', $path);
+    return $result === 1;
 }
 
 function getAbsolutePath(string $path): string

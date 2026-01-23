@@ -17,7 +17,7 @@ class DifferTest extends TestCase
      * @throws Exception
      */
     #[DataProvider('diffProvider')]
-    public function testDiff($fileType1, $fileType2, $format): void
+    public function testDiff(string $fileType1, string $fileType2, string $format): void
     {
         $actual = genDiff("file1.{$fileType1}", "file2.{$fileType2}", $format);
         $expected = getFileContent("expected/{$format}");

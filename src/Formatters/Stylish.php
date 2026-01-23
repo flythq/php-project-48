@@ -25,7 +25,7 @@ function format(array $diff): string
     return formatNodes($diff);
 }
 
-function formatNodes($diffNodes, int $depth = 1): string
+function formatNodes(mixed $diffNodes, int $depth = 1): string
 {
     if (isSimpleValue($diffNodes)) {
         return stringifyValue($diffNodes, $depth);

@@ -32,6 +32,14 @@
   "require-dev": {
     "squizlabs/php_codesniffer": "^4.0",
     "phpunit/phpunit": "^11.5",
-    "roave/security-advisories": "dev-latest"
+    "roave/security-advisories": "dev-latest",
+    "phpstan/phpstan": "^2.1",
+    "phpstan/extension-installer": "^1.4",
+    "phpstan/phpstan-phpunit": "^2.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "phpstan/extension-installer": false
+    }
   }
 }
