@@ -59,7 +59,10 @@ function formatNodes(array $nodes, string $path = ''): string
         }
     }
 
-    return implode("\n", array_filter($lines));
+    $filteredLines = array_filter($lines, function ($line) {
+        return $line !== '';
+    });
+    return implode("\n", $filteredLines);
 }
 
 function formatValue(mixed $value): string
