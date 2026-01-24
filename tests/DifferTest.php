@@ -56,7 +56,7 @@ class DifferTest extends TestCase
         return [
             'invalid json file'  => ['invalid.json', 'file2.json'],
             'invalid yaml file' => ['file1.yaml', 'invalid.yaml'],
-            'not existing file'   => ['some-file.json', 'file2.yaml'],
+            'not existing file'   => ['notExist.json', 'file2.yaml'],
         ];
     }
 }

@@ -6,7 +6,7 @@ namespace Differ\Formatters\Stylish;
 
 use function Differ\Formatters\stringify;
 
-use const Differ\Differ\COMPARABLE_TYPES;
+use const Differ\Differ\VALID_TYPES;
 
 const STYLISH_FORMAT_CONFIG = [
     'indent' => [
@@ -15,10 +15,10 @@ const STYLISH_FORMAT_CONFIG = [
         'compareSymbolLength' => 2,
     ],
     'symbols' => [
-        COMPARABLE_TYPES['added'] => '+',
-        COMPARABLE_TYPES['removed'] => '-',
-        COMPARABLE_TYPES['unchanged'] => ' ',
-        COMPARABLE_TYPES['nested'] => ' ',
+        VALID_TYPES['added']     => '+',
+        VALID_TYPES['removed']   => '-',
+        VALID_TYPES['unchanged'] => ' ',
+        VALID_TYPES['nested']    => ' ',
     ],
 ];
 
@@ -58,8 +58,8 @@ function formatDiffNode(array $node, int $depth, string $indent): string
     $type = $node['type'];
 
     return match ($type) {
-        COMPARABLE_TYPES['changed'] => formatChangedNode($node, $depth, $indent, $key),
-        COMPARABLE_TYPES['nested'] => formatNestedNode($node, $depth, $indent, $key),
+        VALID_TYPES['changed'] => formatChangedNode($node, $depth, $indent, $key),
+        VALID_TYPES['nested'] => formatNestedNode($node, $depth, $indent, $key),
         default => formatSimpleDiffNode($node, $depth, $indent, $key, $type)
     };
 }
@@ -68,7 +68,7 @@ function formatChangedNode(array $node, int $depth, string $indent, string $key)
 {
     $removedLine = formatDiffLine(
         $indent,
-        COMPARABLE_TYPES['removed'],
+        VALID_TYPES['removed'],
         $key,
         $node['oldValue'],
         $depth
@@ -76,7 +76,7 @@ function formatChangedNode(array $node, int $depth, string $indent, string $key)
 
     $addedLine = formatDiffLine(
         $indent,
-        COMPARABLE_TYPES['added'],
+        VALID_TYPES['added'],
         $key,
         $node['newValue'],
         $depth
@@ -89,7 +89,7 @@ function formatNestedNode(array $node, int $depth, string $indent, string $key):
 {
     return formatDiffLine(
         $indent,
-        COMPARABLE_TYPES['nested'],
+        VALID_TYPES['nested'],
         $key,
         $node['children'],
         $depth

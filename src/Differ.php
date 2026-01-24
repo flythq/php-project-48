@@ -13,7 +13,7 @@ use function Differ\Utils\getFileExtension;
 use function Funct\Collection\sortBy;
 use function Funct\Collection\union;
 
-const COMPARABLE_TYPES = [
+const VALID_TYPES = [
     'added' => 'added',
     'removed' => 'removed',
     'changed' => 'changed',
@@ -49,7 +49,7 @@ function buildDiff(array $data1, array $data2): array
         if (!array_key_exists($key, $data1)) {
             return [
                 'key' => $key,
-                'type' => COMPARABLE_TYPES['added'],
+                'type' => VALID_TYPES['added'],
                 'value' => $value2
             ];
         }
@@ -57,7 +57,7 @@ function buildDiff(array $data1, array $data2): array
         if (!array_key_exists($key, $data2)) {
             return [
                 'key' => $key,
-                'type' => COMPARABLE_TYPES['removed'],
+                'type' => VALID_TYPES['removed'],
                 'value' => $value1
             ];
         }
@@ -68,7 +68,7 @@ function buildDiff(array $data1, array $data2): array
         ) {
             return [
                 'key' => $key,
-                'type' => COMPARABLE_TYPES['nested'],
+                'type' => VALID_TYPES['nested'],
                 'children' => buildDiff($value1, $value2)
             ];
         }
@@ -76,7 +76,7 @@ function buildDiff(array $data1, array $data2): array
         if ($value1 !== $value2) {
             return [
                 'key' => $key,
-                'type' => COMPARABLE_TYPES['changed'],
+                'type' => VALID_TYPES['changed'],
                 'oldValue' => $value1,
                 'newValue' => $value2
             ];
@@ -84,7 +84,7 @@ function buildDiff(array $data1, array $data2): array
 
         return [
             'key' => $key,
-            'type' => COMPARABLE_TYPES['unchanged'],
+            'type' => VALID_TYPES['unchanged'],
             'value' => $value1
         ];
     }, $sortedKeys);

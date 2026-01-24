@@ -8,14 +8,9 @@ use InvalidArgumentException;
 
 use function Differ\Formatters\stringify;
 
-use const Differ\Differ\COMPARABLE_TYPES;
+use const Differ\Differ\VALID_TYPES;
 
-const PLAIN_FORMAT_TEXT = [
-    COMPARABLE_TYPES['added'] => 'added',
-    COMPARABLE_TYPES['removed'] => 'removed',
-    COMPARABLE_TYPES['changed'] => 'updated',
-    COMPARABLE_TYPES['nested'] => '[complex value]',
-];
+const COMPLEX_VALUE = '[complex value]';
 
 function format(array $diff): string
 {
@@ -37,35 +32,26 @@ function formatNodes(array $nodes, string $path = ''): string
         }
 
         switch ($type) {
-            case COMPARABLE_TYPES['nested']:
+            case VALID_TYPES['nested']:
                 $lines[] = formatNodes($node['children'], $currentPath);
                 break;
 
-            case COMPARABLE_TYPES['added']:
-                $value = stringify(
-                    $node['value'],
-                    ['quoteStrings' => true, 'complexValue' => PLAIN_FORMAT_TEXT[COMPARABLE_TYPES['nested']]]
-                );
+            case VALID_TYPES['added']:
+                $value = stringify($node['value'], ['quoteStrings' => true, 'complexValue' => COMPLEX_VALUE]);
                 $lines[] = "Property '{$currentPath}' was added with value: {$value}";
                 break;
 
-            case COMPARABLE_TYPES['removed']:
+            case VALID_TYPES['removed']:
                 $lines[] = "Property '{$currentPath}' was removed";
                 break;
 
-            case COMPARABLE_TYPES['changed']:
-                $oldValue = stringify(
-                    $node['oldValue'],
-                    ['quoteStrings' => true, 'complexValue' => PLAIN_FORMAT_TEXT[COMPARABLE_TYPES['nested']]]
-                );
-                $newValue = stringify(
-                    $node['newValue'],
-                    ['quoteStrings' => true, 'complexValue' => PLAIN_FORMAT_TEXT[COMPARABLE_TYPES['nested']]]
-                );
+            case VALID_TYPES['changed']:
+                $oldValue = stringify($node['oldValue'], ['quoteStrings' => true, 'complexValue' => COMPLEX_VALUE]);
+                $newValue = stringify($node['newValue'], ['quoteStrings' => true, 'complexValue' => COMPLEX_VALUE]);
                 $lines[] = "Property '{$currentPath}' was updated. From {$oldValue} to {$newValue}";
                 break;
 
-            case COMPARABLE_TYPES['unchanged']:
+            case VALID_TYPES['unchanged']:
                 $lines[] = '';
                 break;
 
