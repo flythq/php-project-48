@@ -18,6 +18,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Debug test files (before hexlet check)
+        run: |
+          echo "=== Test files structure ==="
+          find tests -type f -name "*.php" | sort
+          
+          echo -e "\n=== DifferTest.php content (first 50 lines) ==="
+          head -50 tests/DifferTest.php 2>/dev/null || echo "File not found"
+          
+          echo -e "\n=== Looking for expected plain output ==="
+          find tests -name "*plain*.txt" -o -name "*expected*.txt" | while read f; do
+            echo "=== File: $f ==="
+            head -20 "$f"
+            echo ""
+          done 2>/dev/null || echo "No expected files found"
+
       - name: Hexlet project check
         uses: hexlet/project-action@release
         with:
