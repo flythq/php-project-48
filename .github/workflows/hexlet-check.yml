@@ -21,27 +21,3 @@ jobs:
         uses: hexlet/project-action@release
         with:
           hexlet-id: ${{ secrets.HEXLET_ID }}
-
-      - name: Debug - Save test artifacts
-        if: always()
-        run: |
-          # Создаем архив с проектом (включая тесты)
-          tar -czf project-tests.tar.gz --exclude=vendor --exclude=node_modules .
-          
-          # Копируем важные файлы
-          mkdir -p debug-output
-          cp -r tests/ debug-output/ || true
-          cp -r code/ debug-output/ || true
-          
-          # Сохраняем список всех файлов
-          find . -type f -name "*.php" -o -name "*.json" -o -name "*.yml" -o -name "*.txt" | grep -v vendor | grep -v node_modules > debug-output/file-list.txt
-          
-      - name: Upload debug artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-files
-          path: |
-            debug-output/
-            project-tests.tar.gz
-          retention-days: 7
