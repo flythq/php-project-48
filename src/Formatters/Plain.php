@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Differ\Formatters\Plain;
 
-use InvalidArgumentException;
-
-use function Differ\Formatters\stringify;
+use function Differ\DataUtilities\stringify;
 
 use const Differ\Differ\VALID_TYPES;
 
@@ -19,50 +17,55 @@ function format(array $diff): string
 
 function formatNodes(array $nodes, string $path = ''): string
 {
-    $lines = [];
-
-    foreach ($nodes as $node) {
+    $lines = array_map(function ($node) use ($path) {
         $key = $node['key'];
         $type = $node['type'];
 
-        if ($path === '') {
-            $currentPath = $key;
-        } else {
-            $currentPath = "{$path}.{$key}";
+        $currentPath = $path === '' ? $key : "{$path}.{$key}";
+
+        if ($type === VALID_TYPES['nested']) {
+            return formatNodes($node['children'], $currentPath);
         }
 
-        switch ($type) {
-            case VALID_TYPES['nested']:
-                $lines[] = formatNodes($node['children'], $currentPath);
-                break;
+        if ($type === VALID_TYPES['added']) {
+            $value = stringify(
+                $node['value'],
+                [
+                    'quoteStrings' => true,
+                    'complexValue' => COMPLEX_VALUE
+                ]
+            );
 
-            case VALID_TYPES['added']:
-                $value = stringify($node['value'], ['quoteStrings' => true, 'complexValue' => COMPLEX_VALUE]);
-                $lines[] = "Property '{$currentPath}' was added with value: {$value}";
-                break;
-
-            case VALID_TYPES['removed']:
-                $lines[] = "Property '{$currentPath}' was removed";
-                break;
-
-            case VALID_TYPES['changed']:
-                $oldValue = stringify($node['oldValue'], ['quoteStrings' => true, 'complexValue' => COMPLEX_VALUE]);
-                $newValue = stringify($node['newValue'], ['quoteStrings' => true, 'complexValue' => COMPLEX_VALUE]);
-                $lines[] = "Property '{$currentPath}' was updated. From {$oldValue} to {$newValue}";
-                break;
-
-            case VALID_TYPES['unchanged']:
-                $lines[] = '';
-                break;
-
-            default:
-                throw new InvalidArgumentException("Invalid type state {$type}");
+            return "Property '{$currentPath}' was added with value: {$value}";
         }
-    }
 
-    $filteredLines = array_filter($lines, function ($line) {
-        return $line !== '';
-    });
+        if ($type === VALID_TYPES['removed']) {
+            return "Property '{$currentPath}' was removed";
+        }
+
+        if ($type === VALID_TYPES['changed']) {
+            $oldValue = stringify(
+                $node['oldValue'],
+                [
+                    'quoteStrings' => true,
+                    'complexValue' => COMPLEX_VALUE
+                ]
+            );
+            $newValue = stringify(
+                $node['newValue'],
+                [
+                    'quoteStrings' => true,
+                    'complexValue' => COMPLEX_VALUE
+                ]
+            );
+
+            return "Property '{$currentPath}' was updated. From {$oldValue} to {$newValue}";
+        }
+
+        return '';
+    }, $nodes);
+
+    $filteredLines = array_filter($lines, static fn($line) => $line !== '');
 
     return implode("\n", $filteredLines);
 }

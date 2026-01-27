@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Differ\Formatters\Stylish;
 
-use function Differ\Formatters\stringify;
+use function Differ\DataUtilities\stringify;
 
 use const Differ\Differ\VALID_TYPES;
 
@@ -37,19 +37,23 @@ function formatNodes(mixed $diffNodes, int $depth = 1): string
     $closeBracketIndent = createCloseBracketIndent($depth);
 
     $lines = array_map(
-        fn($node) => formatDiffNode($node, $depth, $indent),
+        static fn($node) => formatDiffNode($node, $depth, $indent),
         $diffNodes
     );
 
-    return "{\n" . implode('', $lines) . "{$closeBracketIndent}}";
+    return sprintf("{\n%s%s}", implode('', $lines), $closeBracketIndent);
 }
 
 function isSimpleValue(mixed $data): bool
 {
-    $isNotArray = !is_array($data);
-    $isNotDiffStructure = is_array($data) && !isset($data[0], $data[0]['type']);
 
-    return $isNotArray || $isNotDiffStructure;
+    if (!is_array($data)) {
+        return true;
+    }
+
+    $firstElement = reset($data);
+
+    return !is_array($firstElement) || !isset($firstElement['type']);
 }
 
 function formatDiffNode(array $node, int $depth, string $indent): string
@@ -126,7 +130,7 @@ function stringifyValue(mixed $value, int $depth): string
     );
 
     $lines = array_map(
-        fn($itemKey, $itemValue) => sprintf(
+        static fn($itemKey, $itemValue) => sprintf(
             "%s%s: %s\n",
             $indent,
             $itemKey,

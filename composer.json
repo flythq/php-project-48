@@ -1,9 +1,7 @@
 {
   "name": "hexlet/code",
   "description": "Difference calculator",
-  "bin": [
-    "bin/gendiff"
-  ],
+  "bin": ["bin/gendiff"],
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -14,9 +12,8 @@
   ],
   "autoload": {
     "files": [
-      "src/Cli.php",
       "src/Differ.php",
-      "src/Utils.php",
+      "src/DataUtilities.php",
       "src/Parser.php",
       "src/Formatters.php",
       "src/Formatters/Stylish.php",
