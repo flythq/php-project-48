@@ -6,7 +6,7 @@ namespace Differ\DataUtilities;
 
 use InvalidArgumentException;
 
-function getFileContentAndExtension(string $filePath): array
+function getFile(string $filePath): array
 {
     $realPath = (string) realpath($filePath);
 

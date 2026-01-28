@@ -14,21 +14,8 @@ use Symfony\Component\Yaml\Yaml;
 function parse(string $content, string $extension): array
 {
     return match ($extension) {
-        'json' => parseJson($content),
-        'yaml', 'yml' => parseYaml($content),
+        'json' => json_decode($content, true, 512, JSON_THROW_ON_ERROR),
+        'yaml', 'yml' => Yaml::parse($content),
         default => throw new InvalidArgumentException("Unknown parser format '{$extension}'"),
     };
-}
-
-/**
- * @throws JsonException
- */
-function parseJson(string $json): array
-{
-    return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-}
-
-function parseYaml(string $yaml): array
-{
-    return Yaml::parse($yaml);
 }

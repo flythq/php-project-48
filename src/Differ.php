@@ -6,7 +6,7 @@ namespace Differ\Differ;
 
 use Exception;
 
-use function Differ\DataUtilities\getFileContentAndExtension;
+use function Differ\DataUtilities\getFile;
 use function Differ\Parser\parse;
 use function Differ\Formatters\render;
 use function Funct\Collection\sortBy;
@@ -25,8 +25,8 @@ const VALID_TYPES = [
  */
 function genDiff(string $filePath1, string $filePath2, string $format = 'stylish'): string
 {
-    [$file1Content, $file1Extension] = getFileContentAndExtension($filePath1);
-    [$file2Content, $file2Extension] = getFileContentAndExtension($filePath2);
+    [$file1Content, $file1Extension] = getFile($filePath1);
+    [$file2Content, $file2Extension] = getFile($filePath2);
 
     $data1 = parse($file1Content, $file1Extension);
     $data2 = parse($file2Content, $file2Extension);

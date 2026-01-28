@@ -12,70 +12,115 @@ use function Differ\Differ\genDiff;
 
 class DifferTest extends TestCase
 {
-    private string $fixturesPath = __DIR__ . '/fixtures/';
-
-    private function getExpectedPath(string $format): string
+    public function getFixtureFullPath(string $fixtureName): string
     {
-        return "{$this->fixturesPath}expected/{$format}";
+        $parts = [__DIR__, 'fixtures', $fixtureName];
+        return (string) realpath(implode('/', $parts));
     }
 
     /**
      * @throws Exception
      */
-    public function testDiffWithDefaultFormatOption(): void
+    #[DataProvider('differProvider')]
+    public function testDefault(string $firstFilePath, string $secondFilePath): void
     {
-        $actual = genDiff(
-            "{$this->fixturesPath}file1.json",
-            "{$this->fixturesPath}file2.json"
+        $expected = $this->getFixtureFullPath('stylish.expected');
+
+        $result1 = genDiff(
+            $this->getFixtureFullPath($firstFilePath),
+            $this->getFixtureFullPath($secondFilePath),
         );
+        $this->assertStringEqualsFile($expected, $result1);
 
-        $expected = $this->getExpectedPath('stylish');
-
-        $this->assertStringEqualsFile($expected, $actual);
+        $result2 = genDiff(
+            $this->getFixtureFullPath($firstFilePath),
+            $this->getFixtureFullPath($firstFilePath),
+        );
+        $this->assertStringNotEqualsFile($expected, $result2);
     }
 
     /**
      * @throws Exception
      */
-    #[DataProvider('diffProvider')]
-    public function testDiffWithFormatOption(string $fileType1, string $fileType2, string $format): void
+    #[DataProvider('differProvider')]
+    public function testStylish(string $firstFilePath, string $secondFilePath): void
     {
-        $actual = genDiff(
-            "{$this->fixturesPath}file1.{$fileType1}",
-            "{$this->fixturesPath}file2.{$fileType2}",
-            $format
+        $expected = $this->getFixtureFullPath('stylish.expected');
+
+        $result1 = genDiff(
+            $this->getFixtureFullPath($firstFilePath),
+            $this->getFixtureFullPath($secondFilePath),
+            'stylish'
         );
-        $expected = $this->getExpectedPath($format);
+        $this->assertStringEqualsFile($expected, $result1);
 
-        $this->assertStringEqualsFile($expected, $actual);
+        $result2 = genDiff(
+            $this->getFixtureFullPath($firstFilePath),
+            $this->getFixtureFullPath($firstFilePath),
+            'stylish'
+        );
+        $this->assertStringNotEqualsFile($expected, $result2);
     }
 
-    public static function diffProvider(): array
+    /**
+     * @throws Exception
+     */
+    #[DataProvider('differProvider')]
+    public function testPlain(string $firstFilePath, string $secondFilePath): void
     {
-        return [
-            'dataset json/json, -format stylish' => ['json', 'json', 'stylish'],
-            'dataset json/yaml, -format stylish' => ['json', 'yml', 'stylish'],
+        $expected = $this->getFixtureFullPath('plain.expected');
 
-            'dataset yaml/yml, -format plain'  => ['yaml', 'yml', 'plain'],
-            'dataset yml/json, -format plain'  => ['yaml', 'json', 'plain'],
+        $result1 = genDiff(
+            $this->getFixtureFullPath($firstFilePath),
+            $this->getFixtureFullPath($secondFilePath),
+            'plain'
+        );
+        $this->assertStringEqualsFile($expected, $result1);
 
-            'dataset json/json, -format json' => ['json', 'json', 'json'],
-            'dataset yaml/yml, -format json'  => ['yaml', 'yml', 'json'],
-        ];
+        $result2 = genDiff(
+            $this->getFixtureFullPath($firstFilePath),
+            $this->getFixtureFullPath($firstFilePath),
+            'plain'
+        );
+        $this->assertStringNotEqualsFile($expected, $result2);
     }
 
-    #[DataProvider('invalidFileProvider')]
-    public function testInvalidFilesThrowsException(string $fileType1, string $fileType2): void
+    /**
+     * @throws Exception
+     */
+    #[DataProvider('differProvider')]
+    public function testJson(string $firstFilePath, string $secondFilePath): void
+    {
+        $expected = $this->getFixtureFullPath('json.expected');
+
+        $result1 = genDiff(
+            $this->getFixtureFullPath($firstFilePath),
+            $this->getFixtureFullPath($secondFilePath),
+            'json'
+        );
+        $this->assertStringEqualsFile($expected, $result1);
+
+        $result2 = genDiff(
+            $this->getFixtureFullPath($firstFilePath),
+            $this->getFixtureFullPath($firstFilePath),
+            'json'
+        );
+        $this->assertStringNotEqualsFile($expected, $result2);
+    }
+
+    public static function differProvider(): array
+    {
+        return
+            [
+                'json files' => ['file1.json', 'file2.json'],
+                'yaml files' => ['file1.yaml', 'file2.yaml'],
+                'yml files' => ['file1.yml', 'file2.yml'],
+            ];
+    }
+
+    public function testGetFileThrowException(): void
     {
         $this->expectException(Exception::class);
-        genDiff($fileType1, $fileType2);
-    }
-
-    public static function invalidFileProvider(): array
-    {
-        return [
-            'invalid json file'  => ['invalid.json', 'file2.json'],
-            'not existing file'   => ['notExist.json', 'file2.yml'],
-        ];
+        genDiff('notExist.json', 'file2.json');
     }
 }
