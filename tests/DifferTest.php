@@ -118,9 +118,12 @@ class DifferTest extends TestCase
             ];
     }
 
-    public function testGetFileThrowException(): void
+    public function testDifferThrowExceptions(): void
     {
         $this->expectException(Exception::class);
         genDiff('notExist.json', 'file2.json');
+
+        $this->expectException(Exception::class);
+        genDiff('file1.json', 'file2.json', 'UnknownFormat');
     }
 }
